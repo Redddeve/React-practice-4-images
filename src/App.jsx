@@ -23,10 +23,12 @@ const App = () => {
     if (!query) {
       return;
     }
+
     if (page === 1) {
       setLoading(true);
     }
     fetchImages({ page, q: query });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, query]);
 
   useEffect(() => {
@@ -38,6 +40,7 @@ const App = () => {
         ? toast.info(`You have no more images to load.`)
         : toast.info(`You have ${totalLeft} more images to load.`);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [totalLeft]);
 
   const fetchImages = async params => {
