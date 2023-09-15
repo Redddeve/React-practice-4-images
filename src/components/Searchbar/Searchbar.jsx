@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import url from '../../images/icons8-search-50.png';
 
 import {
@@ -10,45 +10,42 @@ import {
   StyledImg,
 } from './Searchbar.styled';
 
-export default class Searchbar extends Component {
-  state = {
-    query: '',
-  };
-  static propTypes = { onInputQuery: PropTypes.func.isRequired };
+const Searchbar = ({ onInputQuery }) => {
+  const [query, setQuery] = useState('');
 
-  onInputChange = e => {
-    const query = e.target.value;
-    this.setState({
-      query: query,
-    });
+  const onInputChange = e => {
+    const queryValue = e.target.value;
+    setQuery(queryValue);
   };
 
-  onSubmit = e => {
+  const onSubmit = e => {
     e.preventDefault();
 
-    this.props.onInputQuery(this.state.query);
+    onInputQuery(query);
     e.currentTarget.reset();
   };
 
-  render() {
-    return (
-      <StyledHeader>
-        <StyledForm onSubmit={this.onSubmit}>
-          <StyledButton type="submit">
-            <StyledImg src={url} alt="Search" />
-          </StyledButton>
+  return (
+    <StyledHeader>
+      <StyledForm onSubmit={onSubmit}>
+        <StyledButton type="submit">
+          <StyledImg src={url} alt="Search" />
+        </StyledButton>
 
-          <StyledInput
-            type="text"
-            name="Search"
-            value={this.state.query}
-            autoComplete="off"
-            autoFocus
-            placeholder="Search images and photos"
-            onChange={this.onInputChange}
-          />
-        </StyledForm>
-      </StyledHeader>
-    );
-  }
-}
+        <StyledInput
+          type="text"
+          name="Search"
+          value={query}
+          autoComplete="off"
+          autoFocus
+          placeholder="Search images and photos"
+          onChange={onInputChange}
+        />
+      </StyledForm>
+    </StyledHeader>
+  );
+};
+
+Searchbar.propTypes = { onInputQuery: PropTypes.func.isRequired };
+
+export default Searchbar;
