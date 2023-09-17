@@ -7,6 +7,7 @@ import getImages from 'helpers/pixabayAPI';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { Wrapper } from 'styles/App.styled';
+import { LoaderMore } from 'components/Loader/LoaderMore';
 
 const App = () => {
   const [gallery, setGallery] = useState([]);
@@ -17,6 +18,7 @@ const App = () => {
   const [page, setPage] = useState(1);
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadMore] = useState(false);
   const [currentImg, setCurrentImg] = useState(null);
   const [currentTags, setCurrentTags] = useState(null);
 
@@ -28,6 +30,8 @@ const App = () => {
       try {
         if (page === 1) {
           setLoading(true);
+        } else {
+          setLoadMore(true);
         }
         const { hits, totalHits } = await getImages(params);
 
@@ -46,6 +50,7 @@ const App = () => {
         toast.error(err);
       } finally {
         setLoading(false);
+        setLoadMore(false);
       }
     };
     fetchImages({ page, q: query });
@@ -102,6 +107,7 @@ const App = () => {
         setQuery(queryStr);
         setGallery([]);
         setPage(1);
+        // setLoadMore(false);
         break;
     }
   };
@@ -117,8 +123,8 @@ const App = () => {
   };
 
   const loadMore =
-    loading && gallery.length ? (
-      <Loader />
+    loadingMore && gallery.length ? (
+      <LoaderMore />
     ) : (
       gallery.length !== totalHitsNum && (
         <Button onLoadMore={onLoadMore} text="Load more" />
