@@ -11,8 +11,9 @@ import { Wrapper } from 'styles/App.styled';
 const App = () => {
   const [gallery, setGallery] = useState([]);
   const [query, setQuery] = useState('');
-  const [totalLeft, setTotalLeft] = useState(0);
-  const [per_page] = useState(12);
+  // const [totalLeft, setTotalLeft] = useState(0);
+  const [totalHitsNum, setTotalHits] = useState(0);
+  // const [per_page] = useState(12);
   const [page, setPage] = useState(1);
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -23,15 +24,35 @@ const App = () => {
     if (!query) {
       return;
     }
+    const fetchImages = async params => {
+      try {
+        if (page === 1) {
+          setLoading(true);
+        }
+        const { hits, totalHits } = await getImages(params);
 
-    if (page === 1) {
-      setLoading(true);
-    }
+        if (totalHits > 0) {
+          setGallery(prev => [...prev, ...hits]);
+          // setTotalLeft(totalHits - gallery.length - per_page);
+          if (page === 1) {
+            setTotalHits(totalHits);
+            toast.success(`We found ${totalHits} images!`, {
+              position: 'top-right',
+              autoClose: 1000,
+            });
+          }
+        }
+      } catch (err) {
+        toast.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchImages({ page, q: query });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, query]);
 
-  useEffect(() => {
+  /* useEffect(() => {
+    //TODO
     if (!query) {
       return;
     }
@@ -41,10 +62,13 @@ const App = () => {
         : toast.info(`You have ${totalLeft} more images to load.`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [totalLeft]);
+  }, [totalLeft]); */
 
-  const fetchImages = async params => {
+  /* const fetchImages = async params => {
     try {
+      if (page === 1) {
+        setLoading(true);
+      }
       const { hits, totalHits } = await getImages(params);
 
       if (totalHits > 0) {
@@ -62,7 +86,7 @@ const App = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }; */
 
   const onInputQuery = queryStr => {
     switch (queryStr) {
@@ -96,7 +120,9 @@ const App = () => {
     loading && gallery.length ? (
       <Loader />
     ) : (
-      totalLeft > 0 && <Button onLoadMore={onLoadMore} text="Load more" />
+      gallery.length !== totalHitsNum && (
+        <Button onLoadMore={onLoadMore} text="Load more" />
+      )
     );
   return (
     <Wrapper>
