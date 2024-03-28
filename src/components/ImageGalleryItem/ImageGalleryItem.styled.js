@@ -8,8 +8,6 @@ export const GalleryItem = styled.li`
 export const GalleryImg = styled.img`
   width: 400px;
   height: 300px;
-  /* width: 100%;
-  height: 300px; */
   object-fit: cover;
   transition: transform 250ms ease;
   &:hover {

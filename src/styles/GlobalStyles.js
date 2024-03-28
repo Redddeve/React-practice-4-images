@@ -36,12 +36,4 @@ img {
   height: auto;
 }
 
-/* div {
-  display: flex;
-  flex-direction: column;
-  justify-items: center;
-  align-items: flex-start;
-  font-size: 20px;
-  color: #010101;
-} */
 `;
